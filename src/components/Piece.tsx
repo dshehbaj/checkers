@@ -6,7 +6,7 @@ interface PieceInterface {
 }
 
 const Piece: React.FC<PieceInterface> = ({ color }) => {
-  const bg = color ? "red" : "gray.600";
+  const bg = color ? "red" : "gray.700";
   return (
     <Circle size="85px" bg={bg} border="4px" borderColor="black">
       <Circle size="55px" bg={bg} border="4px" borderColor="black" />
