@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, Center, HStack, VStack } from "@chakra-ui/react";
+import { Box, Center, HStack, VStack } from "@chakra-ui/react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Piece from "./Piece";
 
 interface BoardProps {
@@ -17,14 +18,20 @@ interface SquareProps extends RowProps {
 const DARK = "#A05F18";
 const LIGHT = "#DBA65E";
 const OUTLINE = "#412B11";
-const TOP_SPACING = 85;
 
-const Square: React.FC<SquareProps> = ({ row, col, children }) => {
+const Square: React.FC<SquareProps> = ({ row, col, size, children }) => {
   const offset = row % 2 ? 0 : 1;
   const bg = (col + offset) % 2 ? LIGHT : DARK;
+  const one_d = row * size + col;
   return (
-    <Center width="100px" height="100px" bg={bg} flex="1">
-      {children}
+    <Center width="100px" height="100px" bg={bg}>
+      <Draggable index={one_d} draggableId={String(one_d)}>
+        {({ draggableProps, dragHandleProps, innerRef }) => (
+          <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
+            {children}
+          </Box>
+        )}
+      </Draggable>
     </Center>
   );
 };
@@ -32,52 +39,36 @@ const Square: React.FC<SquareProps> = ({ row, col, children }) => {
 const Row: React.FC<RowProps> = ({ row, size }) => {
   const mid = Math.floor(size / 2);
   return (
-    <HStack spacing={0} flex="1">
-      <Text p={2} color="white">
-        {size - row}
-      </Text>
+    <HStack spacing={0}>
       {new Array(size).fill(0).map((_, idx) => {
+        const one_d = row * size + idx;
+        const isLight = (idx + ((row % 2) + 1)) % 2;
         return (
-          <Square row={row} col={idx} size={size}>
-            {(idx + ((row % 2) + 1)) % 2 === 0 &&
-              row !== mid &&
-              row !== mid - 1 &&
-              <Piece color={row > mid ? 1 : 0} />
-            }
-          </Square>
+          <Droppable droppableId={String(one_d)} key={one_d}>
+            {({ droppableProps, innerRef }) => (
+              <Box {...droppableProps} ref={innerRef}>
+                <Square row={row} col={idx} size={size}>
+                  {!isLight && row !== mid && row !== mid - 1 && (
+                    <Piece color={row > mid ? 1 : 0} />
+                  )}
+                </Square>
+              </Box>
+            )}
+          </Droppable>
         );
       })}
-      <Text p={2} color="white">
-        {size - row}
-      </Text>
     </HStack>
   );
 };
 
 const Board: React.FC<BoardProps> = ({ size }) => {
   return (
-    <VStack spacing={0} bg={OUTLINE} rounded="2xl" flex="1">
-      <HStack spacing={TOP_SPACING}>
+    <VStack spacing={0} bg={OUTLINE} rounded="2xl" p={4}>
+      <DragDropContext onDragEnd={(res) => console.log(res)}>
         {new Array(size).fill(0).map((_, idx) => {
-          return (
-            <Text p={1} color="white">
-              {String.fromCharCode("a".charCodeAt(0) + idx)}
-            </Text>
-          );
+          return <Row row={idx} size={size} />;
         })}
-      </HStack>
-      {new Array(size).fill(0).map((_, idx) => {
-        return <Row row={idx} size={size} />;
-      })}
-      <HStack spacing={TOP_SPACING}>
-        {new Array(size).fill(0).map((_, idx) => {
-          return (
-            <Text p={1} color="white">
-              {String.fromCharCode("a".charCodeAt(0) + idx)}
-            </Text>
-          );
-        })}
-      </HStack>
+      </DragDropContext>
     </VStack>
   );
 };
