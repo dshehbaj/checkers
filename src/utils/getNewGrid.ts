@@ -28,7 +28,6 @@ function getNewGrid(
     return value > 0 ? -1 * value : value;
   });
 
-
   //Evaluate tokens of the person who's turn is now
   gridCopy = gridCopy.map((value, idx) => {
     let row = Math.floor(idx / size);
