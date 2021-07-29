@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Piece from "./Piece";
 import validateMove from "../utils/validate";
 import getNewGrid from "../utils/getNewGrid";
+import magicNums from "../magicNumbers";
 
 interface BoardProps {
   size: number;
@@ -28,9 +29,9 @@ const TOPSPACING = 107.5;
 
 //Negative values = item is disabled
 //0 = item is empty/not visible
-const BLACK = 1;
-const RED = 2;
-const EMPTY = 9;
+const BLACK = magicNums.BLACK;
+const RED = magicNums.RED;
+const EMPTY = magicNums.EMPTY;
 const SQUARE_SIZE = 115;
 
 const BSquare: React.FC<SquareProps> = ({ row, col, size, dropDisabled, token }) => {

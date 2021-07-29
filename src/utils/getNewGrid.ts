@@ -1,11 +1,13 @@
+import magicNums from "../magicNumbers";
+
 function getNewGrid(
   originalGrid: number[],
   size: number,
   res: { [key: string]: any }
 ): number[] {
-  const BLACK = 1;
-  const RED = 2;
-  const EMPTY = 9;
+  const BLACK = magicNums.BLACK;
+  const RED = magicNums.RED;
+  const EMPTY = magicNums.EMPTY;
 
   const src = res.source.droppableId;
   const dst = res.destination.droppableId;

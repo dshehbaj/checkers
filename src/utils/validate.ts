@@ -1,4 +1,5 @@
 import isUnit from "./distance";
+import magicNums from "../magicNumbers";
 
 function validateMove(
   grid: number[],
@@ -8,7 +9,7 @@ function validateMove(
   let src = parseInt(res.source.droppableId);
   let dst = parseInt(res.destination.droppableId);
   let gridCopy = Array.from(grid);
-  const EMPTY = 9;
+  const EMPTY = magicNums.EMPTY;
   if (!isUnit(src, dst, size)) return false; //Can only move 1 unit sideways.
   if (Math.abs(gridCopy[dst]) !== EMPTY) return false; //Can not move onto an occupied place.
 
