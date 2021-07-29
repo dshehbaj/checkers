@@ -3,6 +3,7 @@ import { Text, Box, Center, HStack, VStack } from "@chakra-ui/react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Piece from "./Piece";
 import validateMove from "../utils/validate";
+import getNewGrid from "../utils/getNewGrid";
 
 interface BoardProps {
   size: number;
@@ -101,15 +102,10 @@ const Board: React.FC<BoardProps> = ({ size }) => {
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
     if (!result.destination) return;
-    console.log(result);
-    const src = parseInt(result.source.droppableId);
-    const dst = parseInt(result.destination.droppableId);
-    if (!validateMove(grid, size, src, dst)) return;
-    const tempGrid = Array.from(grid);
-    const temp = tempGrid[src];
-    tempGrid[src] = tempGrid[dst];
-    tempGrid[dst] = temp;
-    setGrid(tempGrid);
+    return (
+      validateMove(grid, size, result) &&
+      setGrid(getNewGrid(grid, size, result))
+    );
   };
 
   return (

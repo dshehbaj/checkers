@@ -3,9 +3,10 @@ import isUnit from "./distance";
 function validateMove(
   grid: number[],
   size: number,
-  src: number,
-  dst: number
+  res: { [key: string]: any }
 ): boolean {
+  let src = parseInt(res.source.droppableId);
+  let dst = parseInt(res.destination.droppableId);
   let gridCopy = Array.from(grid);
   if (!isUnit(src, dst, size)) return false; //Can only move 1 unit sideways.
   if (gridCopy[dst] !== 0) return false; //Can not move onto an occupied place.
@@ -17,7 +18,7 @@ function validateMove(
 
   //Red can only move up the grid.
   if (gridCopy[src] === 2) {
-    if(dst >= src) return false;
+    if (dst >= src) return false;
   }
 
   return true;
