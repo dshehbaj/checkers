@@ -25,14 +25,14 @@ interface SquareProps extends RowProps {
 const DARK = "#A05F18";
 const LIGHT = "#DBA65E";
 const OUTLINE = "#412B11";
-const TOPSPACING = 107.5;
+const SQUARE_SIZE = 120;
+const TOPSPACING = 115;
 
 //Negative values = item is disabled
 //0 = item is empty/not visible
 const BLACK = magicNums.BLACK;
 const RED = magicNums.RED;
 const EMPTY = magicNums.EMPTY;
-const SQUARE_SIZE = 115;
 
 const BSquare: React.FC<SquareProps> = ({
   row,
