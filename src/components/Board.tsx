@@ -50,7 +50,7 @@ const BSquare: React.FC<SquareProps> = ({ row, col, size, dropDisabled, token })
           {({ draggableProps, dragHandleProps, innerRef }) => (
             <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
               <Piece
-                color={Math.abs(token) === BLACK ? 1 : 0}
+                color={Math.abs(token) === RED ? 1 : 0}
                 visibile={Math.abs(token) !== EMPTY}
                 movable={token > 0} //Movable if positive
               />
@@ -70,7 +70,7 @@ const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
       {new Array(size).fill(0).map((_, idx) => {
         const one_d = row * size + idx;
         const isLight = (idx + (row % 2 ? 0 : 1)) % 2 ? true : false;
-        const isDropDisabled = Math.abs(tokens[idx]) !== EMPTY || isLight;
+        const isDropDisabled = (tokens[idx] !== EMPTY) || isLight;
         return (
           <Droppable
             droppableId={String(one_d)}
@@ -102,25 +102,29 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   const b = BLACK;
   const e = EMPTY;
   const [grid, setGrid] = useState([
-    e, -b, e, -b, e, -b, e, -b,
-    -b, e, -b, e, -b, e, -b, e,
-    e, b, e, b, e, b, e, b,
+    -e, -b, -e, -b, -e, -b, -e, -b,
+    -b, -e, -b, -e, -b, -e, -b, -e,
+    -e, b, -e, b, -e, b, -e, b,
 
     e, e, e, e, e, e, e, e,
-    e, e, e, e, e, e, e, e,
+    -e, -e, -e, -e, -e, -e, -e, -e,
 
-    -r, e, -r, e, -r, e, -r, e,
-    e, -r, e, -r, e, -r, e, -r,
-    -r, e, -r, e, -r, e, -r, e,
+    -r, -e, -r, -e, -r, -e, -r, -e,
+    -e, -r, -e, -r, -e, -r, -e, -r,
+    -r, -e, -r, -e, -r, -e, -r, -e,
   ]);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
-    if (!result.destination) return;
-    return (
+    if (!result.destination) setGrid(grid);
+    else {
       validateMove(grid, size, result) &&
       setGrid(getNewGrid(grid, size, result))
-    );
+    }
   };
+
+  const handleOnDragStart = (result: { [key: string]: any }) => {
+    console.log(result);
+  }
 
   return (
     <VStack spacing={1} bg={OUTLINE} rounded="2xl">
@@ -129,7 +133,7 @@ const Board: React.FC<BoardProps> = ({ size }) => {
           return <Text>{String.fromCharCode("a".charCodeAt(0) + idx)}</Text>;
         })}
       </HStack>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
+      <DragDropContext onDragEnd={handleOnDragEnd} onDragStart={handleOnDragStart}>
         {new Array(size).fill(0).map((_, idx) => {
           let rowStart = idx * size;
           return (

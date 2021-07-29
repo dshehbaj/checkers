@@ -28,6 +28,8 @@ function getNewGrid(
     return value > 0 ? -1 * value : value;
   });
 
+
+  const enableSquares: number[] = [];
   //Evaluate tokens of the person who's turn is now
   gridCopy = gridCopy.map((value, idx) => {
     let row = Math.floor(idx / size);
@@ -46,10 +48,14 @@ function getNewGrid(
 
       if (nextRow !== false) {
         if (colRight !== false) {
-          right_diag = Math.abs(gridCopy[nextRow * size + colRight]) === EMPTY;
+          let rightIdx = nextRow * size + colRight;
+          right_diag = Math.abs(gridCopy[rightIdx]) === EMPTY;
+          if (right_diag) enableSquares.push(rightIdx);
         }
         if (colLeft !== false) {
-          left_diag = Math.abs(gridCopy[nextRow * size + colLeft]) === EMPTY;
+          let leftIdx = nextRow * size + colLeft;
+          left_diag = Math.abs(gridCopy[leftIdx]) === EMPTY;
+          if (left_diag) enableSquares.push(leftIdx);
         }
         return left_diag || right_diag ? nextTurn : value;
       }
@@ -57,6 +63,11 @@ function getNewGrid(
     }
     return value;
   });
+
+  for (let i = 0; i < enableSquares.length; i++) {
+    const idx = enableSquares[i]
+    gridCopy[idx] = EMPTY;
+  }
 
   return gridCopy;
 }
