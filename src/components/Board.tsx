@@ -47,7 +47,7 @@ const BSquare: React.FC<SquareProps> = ({
     <Center width={SQUARE_SIZE} height={SQUARE_SIZE} bg={bg}>
       <Square
         size={SQUARE_SIZE}
-        bg={dropDisabled ? "" : "green.700"}
+        bg={dropDisabled ? "" : "green"}
         shadow="dark-lg"
       >
         {
@@ -78,8 +78,7 @@ const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
       <Text p={1.5}>{size - row}</Text>
       {new Array(size).fill(0).map((_, idx) => {
         const one_d = row * size + idx;
-        const isLight = (idx + (row % 2 ? 0 : 1)) % 2 ? true : false;
-        const isDropDisabled = tokens[idx] !== EMPTY || isLight;
+        const isDropDisabled = tokens[idx] !== EMPTY;
         return (
           <Droppable
             droppableId={String(one_d)}
