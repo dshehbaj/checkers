@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, Box, Center, HStack, VStack } from "@chakra-ui/react";
+import { Text, Box, Center, HStack, VStack, Square } from "@chakra-ui/react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Piece from "./Piece";
 import validateMove from "../utils/validate";
@@ -17,6 +17,7 @@ interface RowProps extends BoardProps {
 interface SquareProps extends RowProps {
   col: number;
   token: number;
+  dropDisabled: boolean;
 }
 
 const DARK = "#A05F18";
@@ -24,45 +25,56 @@ const LIGHT = "#DBA65E";
 const OUTLINE = "#412B11";
 const TOPSPACING = 107.5;
 
-const BSquare: React.FC<SquareProps> = ({ row, col, size, token }) => {
+
+//Negative values = item is disabled
+//0 = item is empty/not visible
+const BLACK = 1;
+const RED = 2;
+const EMPTY = 0;
+const SQUARE_SIZE = 115;
+
+const BSquare: React.FC<SquareProps> = ({ row, col, size, dropDisabled, token }) => {
   const offset = row % 2 ? 0 : 1;
   const bg = (col + offset) % 2 ? LIGHT : DARK;
   const one_d = row * size + col;
   return (
-    <Center width="115px" height="115px" bg={bg}>
+    <Center width={SQUARE_SIZE} height={SQUARE_SIZE} bg={bg}>
+      <Square size={SQUARE_SIZE} bg={dropDisabled ? "" : "green.700"} shadow="dark-lg">
       {
         <Draggable
           index={one_d}
           draggableId={String(one_d)}
-          isDragDisabled={token <= 0}
+          isDragDisabled={token <= EMPTY}
         >
           {({ draggableProps, dragHandleProps, innerRef }) => (
             <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
               <Piece
                 color={Math.abs(token) === 2 ? 1 : 0}
-                visibile={token !== 0}
-                movable={token > 0}
+                visibile={token !== EMPTY}
+                movable={token > EMPTY}
               />
             </Box>
           )}
         </Draggable>
       }
+      </Square>
     </Center>
   );
 };
 
 const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
   return (
-    <HStack spacing={0}>
+    <HStack spacing={1}>
       <Text p={1.5}>{size - row}</Text>
       {new Array(size).fill(0).map((_, idx) => {
         const one_d = row * size + idx;
         const isLight = (idx + (row % 2 ? 0 : 1)) % 2 ? true : false;
+        const isDropDisabled = tokens[idx] !== EMPTY || isLight;
         return (
           <Droppable
             droppableId={String(one_d)}
             key={one_d}
-            isDropDisabled={tokens[idx] !== 0 || isLight}
+            isDropDisabled={isDropDisabled}
           >
             {({ droppableProps, innerRef }) => (
               <Box {...droppableProps} ref={innerRef}>
@@ -72,6 +84,7 @@ const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
                   size={size}
                   token={tokens[idx]}
                   tokens={tokens}
+                  dropDisabled={isDropDisabled}
                 />
               </Box>
             )}
@@ -84,20 +97,20 @@ const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
 };
 
 const Board: React.FC<BoardProps> = ({ size }) => {
-  //Black: 1 Normal, 4 King
-  //Red: 2 Normal, 5 King
-  //If Negative then disabled
+  const r = RED;
+  const b = BLACK;
+  const e = EMPTY;
   const [grid, setGrid] = useState([
-    0, -1, 0, -1, 0, -1, 0, -1,
-    -1, 0, -1, 0, -1, 0, -1, 0,
-    0, 1, 0, 1, 0, 1, 0, 1,
+    e, -b, e, -b, e, -b, e, -b,
+    -b, e, -b, e, -b, e, -b, e,
+    e, b, e, b, e, b, e, b,
 
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
+    e, e, e, e, e, e, e, e,
+    e, e, e, e, e, e, e, e,
 
-    -2, 0, -2, 0, -2, 0, -2, 0,
-    0, -2, 0, -2, 0, -2, 0, -2,
-    -2, 0, -2, 0, -2, 0, -2, 0,
+    -r, e, -r, e, -r, e, -r, e,
+    e, -r, e, -r, e, -r, e, -r,
+    -r, e, -r, e, -r, e, -r, e,
   ]);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
@@ -109,7 +122,7 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   };
 
   return (
-    <VStack spacing={0} bg={OUTLINE} rounded="2xl">
+    <VStack spacing={1} bg={OUTLINE} rounded="2xl">
       <HStack spacing={TOPSPACING}>
         {new Array(size).fill(0).map((_, idx) => {
           return <Text>{String.fromCharCode("a".charCodeAt(0) + idx)}</Text>;
