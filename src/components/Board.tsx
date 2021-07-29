@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Piece from "./Piece";
 import validateMove from "../utils/validate";
 import getNewGrid from "../utils/getNewGrid";
+import getSquares from "../utils/getSquares";
 import magicNums from "../magicNumbers";
 
 interface BoardProps {
@@ -106,16 +107,17 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     -b, -e, -b, -e, -b, -e, -b, -e,
     -e, b, -e, b, -e, b, -e, b,
 
-    e, e, e, e, e, e, e, e,
+    -e, -e, -e, -e, -e, -e, -e, -e,
     -e, -e, -e, -e, -e, -e, -e, -e,
 
     -r, -e, -r, -e, -r, -e, -r, -e,
     -e, -r, -e, -r, -e, -r, -e, -r,
     -r, -e, -r, -e, -r, -e, -r, -e,
   ]);
+  const [oldGrid, setOldGrid] = useState(grid);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
-    if (!result.destination) setGrid(grid);
+    if (!result.destination) setGrid(oldGrid);
     else {
       validateMove(grid, size, result) &&
       setGrid(getNewGrid(grid, size, result))
@@ -124,6 +126,10 @@ const Board: React.FC<BoardProps> = ({ size }) => {
 
   const handleOnDragStart = (result: { [key: string]: any }) => {
     console.log(result);
+    const viewGrid = getSquares(grid, size, result);
+    setOldGrid(grid);
+    setGrid(viewGrid);
+    console.log(viewGrid);
   }
 
   return (
