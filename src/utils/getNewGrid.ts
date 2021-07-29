@@ -3,14 +3,15 @@ function getNewGrid(
   size: number,
   res: { [key: string]: any }
 ): number[] {
+  const BLACK = 1;
+  const RED = 2;
+  const EMPTY = 9;
+
   const src = res.source.droppableId;
   const dst = res.destination.droppableId;
   let gridCopy = Array.from(originalGrid);
 
-  const BLACK = 1;
-  const RED = 2;
-
-  const whoPlayed = gridCopy[src] === 1 ? BLACK : RED;
+  const whoPlayed = gridCopy[src] === BLACK ? BLACK : RED;
 
   const temp = gridCopy[src];
   gridCopy[src] = gridCopy[dst];
@@ -43,10 +44,10 @@ function getNewGrid(
 
       if (nextRow !== false) {
         if (colRight !== false) {
-          right_diag = gridCopy[nextRow * size + colRight] === 0;
+          right_diag = Math.abs(gridCopy[nextRow * size + colRight]) === EMPTY;
         }
         if (colLeft !== false) {
-          left_diag = gridCopy[nextRow * size + colLeft] === 0;
+          left_diag = Math.abs(gridCopy[nextRow * size + colLeft]) === EMPTY;
         }
         return left_diag || right_diag ? nextTurn : value;
       }

@@ -30,7 +30,7 @@ const TOPSPACING = 107.5;
 //0 = item is empty/not visible
 const BLACK = 1;
 const RED = 2;
-const EMPTY = 0;
+const EMPTY = 9;
 const SQUARE_SIZE = 115;
 
 const BSquare: React.FC<SquareProps> = ({ row, col, size, dropDisabled, token }) => {
@@ -44,14 +44,14 @@ const BSquare: React.FC<SquareProps> = ({ row, col, size, dropDisabled, token })
         <Draggable
           index={one_d}
           draggableId={String(one_d)}
-          isDragDisabled={token <= EMPTY}
+          isDragDisabled={token < 0 || Math.abs(token) === EMPTY} //Square is disabled or Empty
         >
           {({ draggableProps, dragHandleProps, innerRef }) => (
             <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
               <Piece
-                color={Math.abs(token) === 2 ? 1 : 0}
-                visibile={token !== EMPTY}
-                movable={token > EMPTY}
+                color={Math.abs(token) === BLACK ? 1 : 0}
+                visibile={Math.abs(token) !== EMPTY}
+                movable={token > 0} //Movable if positive
               />
             </Box>
           )}
@@ -69,7 +69,7 @@ const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
       {new Array(size).fill(0).map((_, idx) => {
         const one_d = row * size + idx;
         const isLight = (idx + (row % 2 ? 0 : 1)) % 2 ? true : false;
-        const isDropDisabled = tokens[idx] !== EMPTY || isLight;
+        const isDropDisabled = Math.abs(tokens[idx]) !== EMPTY || isLight;
         return (
           <Droppable
             droppableId={String(one_d)}
