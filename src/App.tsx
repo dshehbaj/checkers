@@ -14,11 +14,11 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <Grid minH="100vh" p={3}>
-        <VStack spacing={8}>
-          <Board size={8} />
+        <VStack>
           <HStack>
             <ColorModeSwitcher />
           </HStack>
+          <Board size={8} />
         </VStack>
       </Grid>
     </ChakraProvider>

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Text, Box, Center, HStack, VStack, Square } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Text, Box, Center, HStack, VStack, Square, Button } from "@chakra-ui/react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Piece from "./Piece";
 import getNewGrid from "../utils/getNewGrid";
@@ -121,7 +121,7 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   const r = RED;
   const b = BLACK;
   const e = EMPTY;
-  const [grid, setGrid] = useState([
+  const initGrid = [
     -e, -b, -e, -b, -e, -b, -e, -b,
     -b, -e, -b, -e, -b, -e, -b, -e,
     -e, b, -e, b, -e, b, -e, b,
@@ -132,9 +132,37 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     -r, -e, -r, -e, -r, -e, -r, -e,
     -e, -r, -e, -r, -e, -r, -e, -r,
     -r, -e, -r, -e, -r, -e, -r, -e,
-  ]);
+  ];
+  const [grid, setGrid] = useState(initGrid);
   const [oldGrid, setOldGrid] = useState(grid);
   const [forceJump, setForceJump] = useState(false);
+
+  const resetGrid = () => {
+    setForceJump(false);
+    setGrid(initGrid);
+    setOldGrid(initGrid);
+  }
+
+  useEffect(() => {
+    const gridFromLocal = window.localStorage.getItem("gridLocal");
+    const oldGridFromLocal = window.localStorage.getItem("oldGridLocal");
+    const forceJumpFromLocal = window.localStorage.getItem("forceJumpLocal");
+    if (forceJumpFromLocal) {
+      setForceJump(eval(forceJumpFromLocal));
+    }
+    if (gridFromLocal) {
+      setGrid(JSON.parse(gridFromLocal));
+    }
+    if (oldGridFromLocal) {
+      setOldGrid(JSON.parse(oldGridFromLocal));
+    }
+  }, [setGrid, setForceJump, setOldGrid]);
+
+  useEffect(() => {
+    window.localStorage.setItem("gridLocal", JSON.stringify(grid));
+    window.localStorage.setItem("forceJumpLocal", String(forceJump));
+    window.localStorage.setItem("oldGridLocal", JSON.stringify(oldGrid));
+  }, [grid, forceJump, oldGrid]);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
     if (!result.destination) setGrid(oldGrid);
@@ -152,45 +180,48 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   };
 
   return (
-    <VStack spacing={STACK_SPACING} bg={OUTLINE} rounded="2xl">
-      {
-        <HStack spacing={TOPSPACING}>
+    <VStack>
+      <Button onClick={() => resetGrid()}>Reset Board</Button>
+      <VStack spacing={STACK_SPACING} bg={OUTLINE} rounded="2xl">
+        {
+          <HStack spacing={TOPSPACING}>
+            {new Array(size).fill(0).map((_, idx) => {
+              return (
+                <Text fontSize={TEXTSIZE} color={TEXTCOLOR}>
+                  {String.fromCharCode("a".charCodeAt(0) + idx)}
+                </Text>
+              );
+            })}
+          </HStack>
+        }
+        <DragDropContext
+          onDragEnd={handleOnDragEnd}
+          onDragStart={handleOnDragStart}
+        >
           {new Array(size).fill(0).map((_, idx) => {
+            let rowStart = idx * size;
             return (
-              <Text fontSize={TEXTSIZE} color={TEXTCOLOR}>
-                {String.fromCharCode("a".charCodeAt(0) + idx)}
-              </Text>
+              <Row
+                row={idx}
+                size={size}
+                tokens={grid.slice(rowStart, rowStart + size)}
+                jumpMode={forceJump}
+              />
             );
           })}
-        </HStack>
-      }
-      <DragDropContext
-        onDragEnd={handleOnDragEnd}
-        onDragStart={handleOnDragStart}
-      >
-        {new Array(size).fill(0).map((_, idx) => {
-          let rowStart = idx * size;
-          return (
-            <Row
-              row={idx}
-              size={size}
-              tokens={grid.slice(rowStart, rowStart + size)}
-              jumpMode={forceJump}
-            />
-          );
-        })}
-      </DragDropContext>
-      {
-        <HStack spacing={TOPSPACING} color={TEXTCOLOR}>
-          {new Array(size).fill(0).map((_, idx) => {
-            return (
-              <Text fontSize={TEXTSIZE}>
-                {String.fromCharCode("a".charCodeAt(0) + idx)}
-              </Text>
-            );
-          })}
-        </HStack>
-      }
+        </DragDropContext>
+        {
+          <HStack spacing={TOPSPACING} color={TEXTCOLOR}>
+            {new Array(size).fill(0).map((_, idx) => {
+              return (
+                <Text fontSize={TEXTSIZE}>
+                  {String.fromCharCode("a".charCodeAt(0) + idx)}
+                </Text>
+              );
+            })}
+          </HStack>
+        }
+      </VStack>
     </VStack>
   );
 };
