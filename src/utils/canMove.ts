@@ -22,7 +22,7 @@ function canMove(
   const colRight = col + 1 < size ? col + 1 : false;
   const colLeft = col - 1 >= 0 ? col - 1 : false;
 
-  const checkMovable = (nxtRow: number, dir: string) => {
+  const checkMovable = (nxtRow: number, direction: string) => {
     const nextRow = nxtRow;
     let right_diag = false;
     let left_diag = false;
@@ -36,16 +36,15 @@ function canMove(
       leftIdx = nextRow * size + colLeft;
       left_diag = Math.abs(grid[leftIdx]) === EMPTY;
     }
-    if (right_diag || left_diag) {
+    if (right_diag) {
       movable = true;
-      if (right_diag) {
-        dirForm[dir + "Right"] = rightIdx;
-        indicies.push(rightIdx);
-      }
-      if (left_diag) {
-        dirForm[dir + "Left"] = leftIdx;
-        indicies.push(leftIdx);
-      }
+      dirForm[direction + "Right"] = rightIdx;
+      indicies.push(rightIdx);
+    }
+    if (left_diag) {
+      movable = true;
+      dirForm[direction + "Left"] = leftIdx;
+      indicies.push(leftIdx);
     }
   };
 
