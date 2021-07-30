@@ -1,9 +1,11 @@
 import magicNums from "../magicNumbers";
+import midPt from "./midPt";
 
 function getNewGrid(
   originalGrid: number[],
   size: number,
-  res: { [key: string]: any }
+  res: { [key: string]: any },
+  isJumpMade: boolean
 ): { grid: number[], forceJump: boolean } {
   const BLACK = magicNums.BLACK;
   const RED = magicNums.RED;
@@ -24,6 +26,10 @@ function getNewGrid(
   //Switch turns
   //Note who's turn it is now
   const nextTurn = whoPlayed === BLACK ? RED : BLACK;
+
+  if (isJumpMade) {
+    gridCopy[midPt(src, dst, size)] = EMPTY;
+  }
 
   //Make every token immovable
   gridCopy = gridCopy.map((value) => {
