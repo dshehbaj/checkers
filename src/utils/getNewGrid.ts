@@ -1,6 +1,7 @@
 import magicNums from "../magicNumbers";
 import midPt from "./midPt";
 import canMove from "./canMove";
+import canJump from "./canJump";
 
 function getNewGrid(
   originalGrid: number[],
@@ -161,6 +162,28 @@ function getNewGrid(
           return value;
         }
         return value;
+      }
+      return value;
+    });
+    gridCopy = gridCopy.map((value, idx) => {
+      if (Math.abs(value) === nextTurn && Math.abs(value) !== EMPTY) {
+        let dir = "";
+        switch (Math.abs(value)) {
+          case magicNums.BKING:
+          case magicNums.RKING:
+            dir = "both";
+            break;
+          case magicNums.BLACK:
+            dir = "down";
+            break;
+          case magicNums.RED:
+            dir = "up";
+            break;
+        }
+        const res = canJump(gridCopy, idx, size, dir);
+        if (res.jumpable) {
+          return nextTurn;
+        }
       }
       return value;
     });
