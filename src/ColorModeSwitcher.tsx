@@ -3,6 +3,7 @@ import {
   useColorMode,
   useColorModeValue,
   Button,
+  Text,
 } from "@chakra-ui/react";
 
 export const ColorModeSwitcher: React.FC = (props) => {
@@ -11,13 +12,12 @@ export const ColorModeSwitcher: React.FC = (props) => {
 
   return (
     <Button
-      fontSize="lg"
       color="current"
       onClick={toggleColorMode}
       aria-label={`Switch to ${text} mode`}
       {...props}
     >
-      Toggle {text === "light" ? "Light" : "Dark"} Mode
+      <Text>Toggle {text === "light" ? "Light" : "Dark"} Mode</Text>
     </Button>
   );
 };
