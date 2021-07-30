@@ -42,6 +42,7 @@ function getNewGrid(
 
   //Check for hops
   if (isJumpMade) {
+    /**
     const dstRow = Math.floor(dst / size);
     const dstCol = dst % size;
 
@@ -97,74 +98,30 @@ function getNewGrid(
         }
       }
     }
-
+    **/
+    let dir = "";
+    switch (Math.abs(gridCopy[dst])) {
+      case magicNums.BKING:
+      case magicNums.RKING:
+        dir = "both";
+        break;
+      case magicNums.BLACK:
+        dir = "down";
+        break;
+      case magicNums.RED:
+        dir = "up";
+        break;
+    }
+    let res = canJump(gridCopy, dst, size, dir);
+    if (res.jumpable) {
+      canHop = true;
+      forceJump = true;
+      gridCopy[dst] = Math.abs(gridCopy[dst]);
+    }
   }
 
   //Check if next player can make jumps.
   if (canHop === false) {
-    gridCopy = gridCopy.map((value, idx) => {
-      if (Math.abs(value) === nextTurn) {
-        let row = Math.floor(idx / size);
-        let col = idx % size;
-
-        let rowPrev = row - 1 >= 0 ? row - 1 : false;
-        let rowNext = row + 1 < size ? row + 1 : false;
-
-        let colLeft = col - 1 >= 0 ? col - 1 : false;
-        let colRight = col + 1 < size ? col + 1 : false;
-
-        let nextRow = nextTurn === BLACK ? rowNext : rowPrev;
-        let left_diag = false;
-        let right_diag = false;
-
-        let leftIdx = -1;
-        let rightIdx = -1;
-
-        if (nextRow !== false) {
-          if (colRight !== false) {
-            rightIdx = nextRow * size + colRight;
-            right_diag = Math.abs(gridCopy[rightIdx]) === whoPlayed;
-          }
-          if (colLeft !== false) {
-            leftIdx = nextRow * size + colLeft;
-            left_diag = Math.abs(gridCopy[leftIdx]) === whoPlayed;
-          }
-
-          const nextRowPrev = nextRow - 1 >= 0 ? nextRow - 1 : false;
-          const nextRowNext = nextRow + 1 < size ? nextRow + 1 : false;
-
-          const nextNextRow = nextTurn === BLACK ? nextRowNext : nextRowPrev;
-
-          if (nextNextRow !== false) {
-            let jumpLeft = false;
-            let jumpRight = false;
-            if (right_diag) {
-              let rt_Col = rightIdx % size;
-              let newRt = rt_Col + 1 < size ? rt_Col + 1 : false;
-              if (newRt !== false) {
-                let newRtIdx = nextNextRow * size + newRt;
-                jumpRight = Math.abs(gridCopy[newRtIdx]) === EMPTY;
-              }
-            }
-            if (left_diag) {
-              let lf_Col = leftIdx % size;
-              let newLf = lf_Col - 1 >= 0 ? lf_Col - 1 : false;
-              if (newLf !== false) {
-                let newLfIdx = nextNextRow * size + newLf;
-                jumpLeft = Math.abs(gridCopy[newLfIdx]) === EMPTY;
-              }
-            }
-            if (jumpRight || jumpLeft) {
-              forceJump = true;
-            }
-            return jumpRight || jumpLeft ? nextTurn : value;
-          }
-          return value;
-        }
-        return value;
-      }
-      return value;
-    });
     gridCopy = gridCopy.map((value, idx) => {
       if (Math.abs(value) === nextTurn && Math.abs(value) !== EMPTY) {
         let dir = "";
@@ -182,6 +139,7 @@ function getNewGrid(
         }
         const res = canJump(gridCopy, idx, size, dir);
         if (res.jumpable) {
+          forceJump = true;
           return nextTurn;
         }
       }
