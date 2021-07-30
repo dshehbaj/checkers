@@ -63,7 +63,7 @@ const BSquare: React.FC<SquareProps> = ({
           {({ draggableProps, dragHandleProps, innerRef }) => (
             <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
               <Piece
-                color={Math.abs(token) === RED ? 1 : 0}
+                color={Math.abs(token)}
                 visibile={Math.abs(token) !== EMPTY}
                 movable={token > 0} //Movable if positive
               />
