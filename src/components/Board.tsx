@@ -26,10 +26,10 @@ interface SquareProps extends RowProps {
 const DARK = "#A05F18";
 const LIGHT = "#DBA65E";
 const OUTLINE = "#412B11";
-const SQUARE_SIZE = [45, 45, 90, 100];
+const SQUARE_SIZE = [45, 45, 90, 90];
 const STACK_SPACING = [0.5, 0.5, 1, 1];
-const TOPSPACING = [43, 43, 86, 93];
-const TEXTSIZE = [7, 7, 14, 21];
+const TOPSPACING = [43, 43, 86, 86];
+const TEXTSIZE = [7, 7, 14, 14];
 const TEXTCOLOR = "white";
 
 //Negative values = item is disabled

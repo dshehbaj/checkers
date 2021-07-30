@@ -8,10 +8,10 @@ interface PieceInterface {
   movable: true | false;
 }
 
-const MOVABLE = [37, 37, 73, 79];
-const OUTER = [31, 31, 59, 65];
-const INNER = [18, 18, 35, 39];
-const TEXTSIZE = [7, 7, 14, 21];
+const MOVABLE = [37, 37, 73, 73];
+const OUTER = [31, 31, 59, 59];
+const INNER = [18, 18, 35, 35];
+const TEXTSIZE = [7, 7, 14, 14];
 const BORDER = "2px";
 
 const Piece: React.FC<PieceInterface> = ({ color, visibile, movable }) => {
