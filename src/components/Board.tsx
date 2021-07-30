@@ -13,6 +13,7 @@ interface BoardProps {
 interface RowProps extends BoardProps {
   row: number;
   tokens: number[];
+  jumpMode: boolean;
 }
 
 interface SquareProps extends RowProps {
@@ -24,8 +25,11 @@ interface SquareProps extends RowProps {
 const DARK = "#A05F18";
 const LIGHT = "#DBA65E";
 const OUTLINE = "#412B11";
-const SQUARE_SIZE = 120;
-const TOPSPACING = 115;
+const SQUARE_SIZE = [45, 45, 90, 100];
+const STACK_SPACING = [0.5, 0.5, 1, 1];
+const TOPSPACING = [43, 43, 86, 93];
+const TEXTSIZE = [7, 7, 14, 21];
+const TEXTCOLOR = "white";
 
 //Negative values = item is disabled
 //0 = item is empty/not visible
@@ -39,6 +43,7 @@ const BSquare: React.FC<SquareProps> = ({
   size,
   dropDisabled,
   token,
+  jumpMode,
 }) => {
   const offset = row % 2 ? 0 : 1;
   const bg = (col + offset) % 2 ? LIGHT : DARK;
@@ -47,35 +52,37 @@ const BSquare: React.FC<SquareProps> = ({
     <Center width={SQUARE_SIZE} height={SQUARE_SIZE} bg={bg}>
       <Square
         size={SQUARE_SIZE}
-        bg={dropDisabled ? "" : "green"}
+        bg={dropDisabled ? "" : jumpMode ? "red" : "green"}
         shadow="dark-lg"
       >
-        {
-          <Draggable
-            index={one_d}
-            draggableId={String(one_d)}
-            isDragDisabled={token < 0 || Math.abs(token) === EMPTY} //Square is disabled or Empty
-          >
-            {({ draggableProps, dragHandleProps, innerRef }) => (
-              <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
-                <Piece
-                  color={Math.abs(token) === RED ? 1 : 0}
-                  visibile={Math.abs(token) !== EMPTY}
-                  movable={token > 0} //Movable if positive
-                />
-              </Box>
-            )}
-          </Draggable>
-        }
+        <Draggable
+          index={one_d}
+          draggableId={String(one_d)}
+          isDragDisabled={token < 0 || Math.abs(token) === EMPTY} //Square is disabled or Empty
+        >
+          {({ draggableProps, dragHandleProps, innerRef }) => (
+            <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
+              <Piece
+                color={Math.abs(token) === RED ? 1 : 0}
+                visibile={Math.abs(token) !== EMPTY}
+                movable={token > 0} //Movable if positive
+              />
+            </Box>
+          )}
+        </Draggable>
       </Square>
     </Center>
   );
 };
 
-const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
+const Row: React.FC<RowProps> = ({ row, size, tokens, jumpMode }) => {
   return (
-    <HStack spacing={1}>
-      <Text p={1.5}>{size - row}</Text>
+    <HStack spacing={STACK_SPACING}>
+      {
+        <Text p={0.5} fontSize={TEXTSIZE} color={TEXTCOLOR}>
+          {size - row}
+        </Text>
+      }
       {new Array(size).fill(0).map((_, idx) => {
         const one_d = row * size + idx;
         const isDropDisabled = tokens[idx] !== EMPTY;
@@ -94,13 +101,18 @@ const Row: React.FC<RowProps> = ({ row, size, tokens }) => {
                   token={tokens[idx]}
                   tokens={tokens}
                   dropDisabled={isDropDisabled}
+                  jumpMode={jumpMode}
                 />
               </Box>
             )}
           </Droppable>
         );
       })}
-      <Text p={1.5}>{size - row}</Text>
+      {
+        <Text p={0.5} fontSize={TEXTSIZE} color={TEXTCOLOR}>
+          {size - row}
+        </Text>
+      }
     </HStack>
   );
 };
@@ -140,12 +152,18 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   };
 
   return (
-    <VStack spacing={1} bg={OUTLINE} rounded="2xl">
-      <HStack spacing={TOPSPACING}>
-        {new Array(size).fill(0).map((_, idx) => {
-          return <Text>{String.fromCharCode("a".charCodeAt(0) + idx)}</Text>;
-        })}
-      </HStack>
+    <VStack spacing={STACK_SPACING} bg={OUTLINE} rounded="2xl">
+      {
+        <HStack spacing={TOPSPACING}>
+          {new Array(size).fill(0).map((_, idx) => {
+            return (
+              <Text fontSize={TEXTSIZE} color={TEXTCOLOR}>
+                {String.fromCharCode("a".charCodeAt(0) + idx)}
+              </Text>
+            );
+          })}
+        </HStack>
+      }
       <DragDropContext
         onDragEnd={handleOnDragEnd}
         onDragStart={handleOnDragStart}
@@ -157,15 +175,22 @@ const Board: React.FC<BoardProps> = ({ size }) => {
               row={idx}
               size={size}
               tokens={grid.slice(rowStart, rowStart + size)}
+              jumpMode={forceJump}
             />
           );
         })}
       </DragDropContext>
-      <HStack spacing={TOPSPACING}>
-        {new Array(size).fill(0).map((_, idx) => {
-          return <Text>{String.fromCharCode("a".charCodeAt(0) + idx)}</Text>;
-        })}
-      </HStack>
+      {
+        <HStack spacing={TOPSPACING} color={TEXTCOLOR}>
+          {new Array(size).fill(0).map((_, idx) => {
+            return (
+              <Text fontSize={TEXTSIZE}>
+                {String.fromCharCode("a".charCodeAt(0) + idx)}
+              </Text>
+            );
+          })}
+        </HStack>
+      }
     </VStack>
   );
 };

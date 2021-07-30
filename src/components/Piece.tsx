@@ -7,22 +7,31 @@ interface PieceInterface {
   movable: true | false;
 }
 
-const Piece: React.FC<PieceInterface> = ({ color, visibile, movable }) => {
+const MOVABLE = [37, 37, 73 ,79];
+const OUTER = [31, 31, 59, 65];
+const INNER = [18, 18, 35, 39];
+const BORDER = "2px";
+
+const Piece: React.FC<PieceInterface> = ({
+  color,
+  visibile,
+  movable,
+}) => {
   const bg = color ? "red" : "gray.700";
   return (
     <Circle
-      size="100px"
+      size={MOVABLE}
       bg={movable ? "orange" : ""}
       visibility={visibile ? "visible" : "hidden"}
     >
       <Circle
-        size="85px"
+        size={OUTER}
         bg={bg}
-        border="4px"
+        border={BORDER}
         borderColor="black"
         shadow="dark-lg"
       >
-        <Circle size="55px" bg={bg} border="4px" borderColor="black" />
+        <Circle size={INNER} bg={bg} border={BORDER} borderColor="black" />
       </Circle>
     </Circle>
   );
