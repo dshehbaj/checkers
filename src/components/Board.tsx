@@ -126,7 +126,7 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   const handleOnDragEnd = (result: { [key: string]: any }) => {
     if (!result.destination) setGrid(oldGrid);
     else {
-      setGrid(getNewGrid(grid, size, result));
+      setGrid(getNewGrid(grid, size, result).grid);
     }
   };
 
