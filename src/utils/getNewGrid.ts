@@ -1,5 +1,6 @@
 import magicNums from "../magicNumbers";
 import midPt from "./midPt";
+import canMove from "./canMove";
 
 function getNewGrid(
   originalGrid: number[],
@@ -168,37 +169,28 @@ function getNewGrid(
   //If next player cannot make jumps, then look for normal squares
   if (forceJump === false) {
     gridCopy = gridCopy.map((value, idx) => {
-      if (Math.abs(value) === nextTurn) {
-        let row = Math.floor(idx / size);
-        let col = idx % size;
-
-        let rowPrev = row - 1 >= 0 ? row - 1 : false;
-        let rowNext = row + 1 < size ? row + 1 : false;
-
-        let colLeft = col - 1 >= 0 ? col - 1 : false;
-        let colRight = col + 1 < size ? col + 1 : false;
-
-        let nextRow = nextTurn === BLACK ? rowNext : rowPrev;
-        let left_diag = false;
-        let right_diag = false;
-
-        if (nextRow !== false) {
-          if (colRight !== false) {
-            let rightIdx = nextRow * size + colRight;
-            right_diag = Math.abs(gridCopy[rightIdx]) === EMPTY;
-          }
-          if (colLeft !== false) {
-            let leftIdx = nextRow * size + colLeft;
-            left_diag = Math.abs(gridCopy[leftIdx]) === EMPTY;
-          }
-          return left_diag || right_diag ? nextTurn : value;
+      if (Math.abs(value) === nextTurn && Math.abs(value) !== EMPTY) {
+        let dir = "";
+        switch (Math.abs(value)) {
+          case magicNums.BKING:
+          case magicNums.RKING:
+            dir = "both";
+            break;
+          case magicNums.BLACK:
+            dir = "down";
+            break;
+          case magicNums.RED:
+            dir = "up";
+            break;
         }
-        return value;
+        const res = canMove(gridCopy, idx, size, dir);
+        if (res.movable) {
+          return nextTurn;
+        }
       }
       return value;
     });
   }
-
   return { grid: gridCopy, forceJump: forceJump };
 }
 

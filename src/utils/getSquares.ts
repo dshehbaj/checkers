@@ -1,4 +1,5 @@
 import magicNums from "../magicNumbers";
+import canMove from "./canMove";
 
 function getSquares(
   originalGrid: number[],
@@ -58,17 +59,25 @@ function getSquares(
       }
     }
   } else {
-    if (colLeft !== false) {
-      const leftIdx = nextRow * size + colLeft;
-      if (Math.abs(gridCopy[leftIdx]) === EMPTY) {
-        gridCopy[leftIdx] = EMPTY;
-      }
+    let dir = "";
+    const value = Math.abs(gridCopy[src]);
+    switch (Math.abs(value)) {
+      case magicNums.BKING:
+      case magicNums.RKING:
+        dir = "both";
+        break;
+      case magicNums.BLACK:
+        dir = "down";
+        break;
+      case magicNums.RED:
+        dir = "up";
+        break;
     }
-    if (colRight !== false) {
-      const rightIdx = nextRow * size + colRight;
-      if (Math.abs(gridCopy[rightIdx]) === EMPTY) {
-        gridCopy[rightIdx] = EMPTY;
-      }
+    const res = canMove(gridCopy, src, size, dir);
+    if (res.movable) {
+      res.indicies.forEach((idx) => {
+        gridCopy[idx] = EMPTY;
+      });
     }
   }
 
