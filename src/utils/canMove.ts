@@ -5,12 +5,13 @@ function canMove(
   idx: number,
   size: number,
   dir: string
-): { movable: boolean; indicies: number[] } {
+): { movable: boolean; indicies: number[], dirForm: {[key: string] : number} } {
   let indicies: number[] = [];
   let movable = false;
+  let dirForm: {[key: string]: number} = {};
 
   if (dir !== "up" && dir !== "down" && dir !== "both") {
-    return { movable, indicies };
+    return { movable, indicies, dirForm };
   }
 
   const EMPTY = magicNums.EMPTY;
@@ -21,7 +22,7 @@ function canMove(
   const colRight = col + 1 < size ? col + 1 : false;
   const colLeft = col - 1 >= 0 ? col - 1 : false;
 
-  const check = (nxtRow: number) => {
+  const checkMovable = (nxtRow: number, dir: string) => {
     const nextRow = nxtRow;
     let right_diag = false;
     let left_diag = false;
@@ -37,21 +38,27 @@ function canMove(
     }
     if (right_diag || left_diag) {
       movable = true;
-      if (right_diag) indicies.push(rightIdx);
-      if (left_diag) indicies.push(leftIdx);
+      if (right_diag) {
+        dirForm[dir + "Right"] = rightIdx;
+        indicies.push(rightIdx);
+      }
+      if (left_diag) {
+        dirForm[dir + "Left"] = leftIdx;
+        indicies.push(leftIdx);
+      }
     }
   };
 
   if (dir === "up" || dir === "both") {
     const rowUp = row - 1 >= 0 ? row - 1 : false;
-    if (rowUp !== false) check(rowUp);
+    if (rowUp !== false) checkMovable(rowUp, "up");
   }
   if (dir === "down" || dir === "both") {
     const rowDown = row + 1 < size ? row + 1 : false;
-    if (rowDown !== false) check(rowDown);
+    if (rowDown !== false) checkMovable(rowDown, "down");
   }
 
-  return { movable, indicies };
+  return { movable, indicies, dirForm };
 }
 
 export default canMove;
