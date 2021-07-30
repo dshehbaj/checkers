@@ -5,6 +5,7 @@ import Piece from "./Piece";
 import getNewGrid from "../utils/getNewGrid";
 import getSquares from "../utils/getSquares";
 import magicNums from "../magicNumbers";
+import ColorModeSwitcher from "./ColorModeSwitcher";
 
 interface BoardProps {
   size: number;
@@ -181,7 +182,10 @@ const Board: React.FC<BoardProps> = ({ size }) => {
 
   return (
     <VStack>
-      <Button onClick={() => resetGrid()}>Reset Board</Button>
+      <HStack>
+        <Button onClick={() => resetGrid()}>Reset Board</Button>
+        <ColorModeSwitcher />
+      </HStack>
       <VStack spacing={STACK_SPACING} bg={OUTLINE} rounded="2xl">
         {
           <HStack spacing={TOPSPACING}>

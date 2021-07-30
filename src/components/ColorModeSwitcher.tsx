@@ -6,7 +6,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-export const ColorModeSwitcher: React.FC = (props) => {
+const ColorModeSwitcher: React.FC = (props) => {
   const { toggleColorMode } = useColorMode();
   const text = useColorModeValue("dark", "light");
 
@@ -21,3 +21,5 @@ export const ColorModeSwitcher: React.FC = (props) => {
     </Button>
   );
 };
+
+export default ColorModeSwitcher;
