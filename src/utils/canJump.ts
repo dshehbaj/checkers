@@ -10,10 +10,9 @@ function canJump(
   let indicies: number[] = [];
   let jumpable = false;
 
-  const EMPTY = magicNums.EMPTY;
   const value = Math.abs(grid[idx]);
 
-  if (value === EMPTY) {
+  if (value === magicNums.EMPTY) {
     return { jumpable, indicies };
   }
 
@@ -74,7 +73,6 @@ function canJump(
         indicies.push(res.dirForm[key]);
       }
     }
-
   };
 
   if (dir === "up" || dir === "both") {

@@ -14,8 +14,6 @@ function canMove(
     return { movable, indicies, dirForm };
   }
 
-  const EMPTY = magicNums.EMPTY;
-
   const row = Math.floor(idx / size);
   const col = idx % size;
 
@@ -30,11 +28,11 @@ function canMove(
     let leftIdx = -1;
     if (colRight !== false) {
       rightIdx = nextRow * size + colRight;
-      right_diag = Math.abs(grid[rightIdx]) === EMPTY;
+      right_diag = Math.abs(grid[rightIdx]) === magicNums.EMPTY;
     }
     if (colLeft !== false) {
       leftIdx = nextRow * size + colLeft;
-      left_diag = Math.abs(grid[leftIdx]) === EMPTY;
+      left_diag = Math.abs(grid[leftIdx]) === magicNums.EMPTY;
     }
     if (right_diag) {
       movable = true;
