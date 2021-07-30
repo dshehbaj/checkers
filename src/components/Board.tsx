@@ -122,20 +122,21 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     -r, -e, -r, -e, -r, -e, -r, -e,
   ]);
   const [oldGrid, setOldGrid] = useState(grid);
+  const [forceJump, setForceJump] = useState(false);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
     if (!result.destination) setGrid(oldGrid);
     else {
-      setGrid(getNewGrid(grid, size, result).grid);
+      const nextGrid = getNewGrid(grid, size, result);
+      setGrid(nextGrid.grid);
+      setForceJump(nextGrid.forceJump);
     }
   };
 
   const handleOnDragStart = (result: { [key: string]: any }) => {
-    console.log(result);
-    const viewGrid = getSquares(grid, size, result);
+    const viewGrid = getSquares(grid, size, result, forceJump);
     setOldGrid(grid);
     setGrid(viewGrid);
-    console.log(viewGrid);
   };
 
   return (
