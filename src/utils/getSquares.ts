@@ -1,4 +1,5 @@
 import magicNums from "../magicNumbers";
+import canJump from "./canJump";
 import canMove from "./canMove";
 
 function getSquares(
@@ -28,6 +29,7 @@ function getSquares(
   const nextRow = whoseTurn === BLACK ? rowNext : rowPrev;
 
   if (forceJump) {
+    /**
     const nextRowPrev = nextRow - 1 >= 0 ? nextRow - 1 : false;
     const nextRowNext = nextRow + 1 < size ? nextRow + 1 : false;
     const nextNextRow = whoseTurn === BLACK ? nextRowNext : nextRowPrev;
@@ -58,6 +60,29 @@ function getSquares(
         }
       }
     }
+    **/
+
+    let dir = "";
+    const value = Math.abs(gridCopy[src]);
+    switch (Math.abs(value)) {
+      case magicNums.BKING:
+      case magicNums.RKING:
+        dir = "both";
+        break;
+      case magicNums.BLACK:
+        dir = "down";
+        break;
+      case magicNums.RED:
+        dir = "up";
+        break;
+    }
+    const res = canJump(gridCopy, src, size, dir);
+    if (res.jumpable) {
+      res.indicies.forEach((idx) =>{
+        gridCopy[idx] = EMPTY;
+      })
+    }
+
   } else {
     let dir = "";
     const value = Math.abs(gridCopy[src]);
