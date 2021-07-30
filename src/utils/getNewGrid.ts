@@ -9,7 +9,6 @@ function getNewGrid(
   res: { [key: string]: any },
   isJumpMade: boolean
 ): { grid: number[]; forceJump: boolean } {
-
   let canHop = false;
   let forceJump = false;
 
@@ -17,7 +16,7 @@ function getNewGrid(
   const dst = res.destination.droppableId;
   let gridCopy = Array.from(originalGrid);
 
-  let nextTurn  = -1;
+  let nextTurn = -1;
   let nextTurnKing = -1;
   //Note who played, then pick next player.
   switch (Math.abs(gridCopy[src])) {
@@ -37,25 +36,17 @@ function getNewGrid(
   gridCopy[src] = gridCopy[dst];
   gridCopy[dst] = temp;
 
-  //Switch turns
-
-  function getDir(value: number): string {
-    let dir = "";
-    switch(value) {
-      case magicNums.BKING:
-      case magicNums.RKING:
-        dir = magicNums.KDIR;
-        break;
-
-      case magicNums.RED:
-        dir = magicNums.RDIR;
-        break;
-
-      case magicNums.BLACK:
-        dir = magicNums.BDIR;
-        break;
+  //Check if pieces can be promoted to kings
+  for (let i = 0; i < size; i++) {
+    if (Math.abs(gridCopy[i]) === magicNums.RED) {
+      gridCopy[i] = magicNums.RKING;
     }
-    return dir;
+  }
+  const lastRow = (size - 1) * size;
+  for (let i = lastRow; i < lastRow + size; i++) {
+    if (Math.abs(gridCopy[i]) === magicNums.BLACK) {
+      gridCopy[i] = magicNums.BKING;
+    }
   }
 
   //Make every token immovable
@@ -66,7 +57,7 @@ function getNewGrid(
   //Check for hops
   if (isJumpMade) {
     //Replace jumped token with disabled empty box.
-    gridCopy[midPt(src, dst, size)] = (magicNums.EMPTY * -1);
+    gridCopy[midPt(src, dst, size)] = magicNums.EMPTY * -1;
     let dir = getDir(Math.abs(gridCopy[dst]));
     let res = canJump(gridCopy, dst, size, dir);
     if (res.jumpable) {
@@ -105,6 +96,25 @@ function getNewGrid(
     });
   }
   return { grid: gridCopy, forceJump: forceJump };
+}
+
+function getDir(value: number): string {
+  let dir = "";
+  switch (value) {
+    case magicNums.BKING:
+    case magicNums.RKING:
+      dir = magicNums.KDIR;
+      break;
+
+    case magicNums.RED:
+      dir = magicNums.RDIR;
+      break;
+
+    case magicNums.BLACK:
+      dir = magicNums.BDIR;
+      break;
+  }
+  return dir;
 }
 
 export default getNewGrid;
