@@ -30,9 +30,23 @@ function getNewGrid(
   //Note who's turn it is now
   const nextTurn = whoPlayed === BLACK ? RED : BLACK;
 
-  //If jump was made. Delete jumped over token.
-  if (isJumpMade) {
-    gridCopy[midPt(src, dst, size)] = EMPTY;
+  function getDir(value: number): string {
+    let dir = "";
+    switch(value) {
+      case magicNums.BKING:
+      case magicNums.RKING:
+        dir = "both";
+        break;
+
+      case magicNums.RED:
+        dir = "up";
+        break;
+
+      case magicNums.BLACK:
+        dir = "down";
+        break;
+    }
+    return dir;
   }
 
   //Make every token immovable
@@ -42,76 +56,8 @@ function getNewGrid(
 
   //Check for hops
   if (isJumpMade) {
-    /**
-    const dstRow = Math.floor(dst / size);
-    const dstCol = dst % size;
-
-    const rowNext = dstRow + 1 < size ? dstRow + 1 : -1;
-    const rowPrev = dstRow - 1 >= 0 ? dstRow - 1 : -1;
-
-    let nextRow = whoPlayed === BLACK ? rowNext : rowPrev;
-    const colLeft = dstCol - 1 >= 0 ? dstCol - 1 : -1;
-    const colRight = dstCol + 1 < size ? dstCol + 1 : -1;
-
-    const nextRowPrev = nextRow - 1 >= 0 ? nextRow - 1 : -1;
-    const nextRowNext = nextRow + 1 < size ? nextRow + 1 : -1;
-    const nextNextRow = whoPlayed === BLACK ? nextRowNext : nextRowPrev;
-
-    let left_diag = false;
-    let right_diag = false;
-    let rightIdx = -1;
-    let leftIdx = -1;
-
-    if (nextRow !== -1) {
-      if (colRight !== -1) {
-        rightIdx = nextRow * size + colRight;
-        right_diag = Math.abs(gridCopy[rightIdx]) === nextTurn;
-      }
-      if (colLeft !== -1) {
-        leftIdx = nextRow * size + colLeft;
-        left_diag = Math.abs(gridCopy[leftIdx]) === nextTurn;
-      }
-
-      if(nextNextRow !== -1 && (right_diag || left_diag)) {
-        let jumpLeft = false;
-        let jumpRight = false;
-        if (right_diag) {
-          let rt_Col = rightIdx % size;
-          let newRt = rt_Col + 1 < size ? rt_Col + 1 : false;
-          if (newRt !== false) {
-            let newRtIdx = nextNextRow * size + newRt;
-            jumpRight = Math.abs(gridCopy[newRtIdx]) === EMPTY;
-          }
-        }
-        if (left_diag) {
-          let lf_Col = leftIdx % size;
-          let newLf = lf_Col - 1 >= 0 ? lf_Col - 1 : false;
-          if (newLf !== false) {
-            let newLfIdx = nextNextRow * size + newLf;
-            jumpLeft = Math.abs(gridCopy[newLfIdx]) === EMPTY;
-          }
-        }
-        if (jumpRight || jumpLeft) {
-          canHop = true;
-          forceJump = true;
-          gridCopy[dst] = Math.abs(gridCopy[dst]);
-        }
-      }
-    }
-    **/
-    let dir = "";
-    switch (Math.abs(gridCopy[dst])) {
-      case magicNums.BKING:
-      case magicNums.RKING:
-        dir = "both";
-        break;
-      case magicNums.BLACK:
-        dir = "down";
-        break;
-      case magicNums.RED:
-        dir = "up";
-        break;
-    }
+    gridCopy[midPt(src, dst, size)] = (EMPTY * -1); //Replace jumped token with disabled empty box.
+    let dir = getDir(Math.abs(gridCopy[dst]));
     let res = canJump(gridCopy, dst, size, dir);
     if (res.jumpable) {
       canHop = true;
@@ -124,20 +70,8 @@ function getNewGrid(
   if (canHop === false) {
     gridCopy = gridCopy.map((value, idx) => {
       if (Math.abs(value) === nextTurn && Math.abs(value) !== EMPTY) {
-        let dir = "";
-        switch (Math.abs(value)) {
-          case magicNums.BKING:
-          case magicNums.RKING:
-            dir = "both";
-            break;
-          case magicNums.BLACK:
-            dir = "down";
-            break;
-          case magicNums.RED:
-            dir = "up";
-            break;
-        }
-        const res = canJump(gridCopy, idx, size, dir);
+        let direction = getDir(Math.abs(value));
+        const res = canJump(gridCopy, idx, size, direction);
         if (res.jumpable) {
           forceJump = true;
           return nextTurn;
@@ -151,20 +85,8 @@ function getNewGrid(
   if (forceJump === false) {
     gridCopy = gridCopy.map((value, idx) => {
       if (Math.abs(value) === nextTurn && Math.abs(value) !== EMPTY) {
-        let dir = "";
-        switch (Math.abs(value)) {
-          case magicNums.BKING:
-          case magicNums.RKING:
-            dir = "both";
-            break;
-          case magicNums.BLACK:
-            dir = "down";
-            break;
-          case magicNums.RED:
-            dir = "up";
-            break;
-        }
-        const res = canMove(gridCopy, idx, size, dir);
+        let direction = getDir(Math.abs(value));
+        const res = canMove(gridCopy, idx, size, direction);
         if (res.movable) {
           return nextTurn;
         }

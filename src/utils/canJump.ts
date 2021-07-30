@@ -16,6 +16,10 @@ function canJump(
     return { jumpable, indicies };
   }
 
+  if (dir !== "up" && dir !== "down" && dir !== "both") {
+    return { jumpable, indicies };
+  }
+
   let enemy = -1;
   let enemyKing = -1;
 
