@@ -121,11 +121,22 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   const [oldGrid, setOldGrid] = useState(grid);
   const [forceJump, setForceJump] = useState(false);
 
+  const [undoGrid, setUndoGrid] = useState(initGrid);
+  const [canUndo, setCanUndo] = useState(false);
+
   const resetGrid = () => {
     setForceJump(false);
     setGrid(initGrid);
     setOldGrid(initGrid);
+    setUndoGrid(initGrid);
+    setCanUndo(false);
   };
+
+  const undoMove = () => {
+    setGrid(undoGrid);
+    setUndoGrid([-1]);
+    setCanUndo(false);
+  }
 
   useEffect(() => {
     const gridFromLocal = window.localStorage.getItem("gridLocal");
@@ -145,6 +156,8 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   const handleOnDragEnd = (result: { [key: string]: any }) => {
     if (!result.destination) setGrid(oldGrid);
     else {
+      setCanUndo(true);
+      setUndoGrid(oldGrid);
       const nextGrid = getNewGrid(grid, size, result, forceJump);
       setGrid(nextGrid.grid);
       setForceJump(nextGrid.forceJump);
@@ -161,6 +174,7 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     <VStack>
       <HStack>
         <Button onClick={() => resetGrid()}>Reset Board</Button>
+        <Button disabled={!canUndo} onClick={() => undoMove()}>Undo Move</Button>
         <ColorModeSwitcher />
       </HStack>
       <VStack spacing={STACK_SPACING} bg={OUTLINE} rounded="2xl">
