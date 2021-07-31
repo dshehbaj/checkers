@@ -1,6 +1,6 @@
 ### React Checkers - Shehbaj Dhillon
 
-- Dependencies Used
+- Dependencies Used ---
   - React Beautiful Drag and Drop --- Drag and drop library. Powerful onDragStart and onDragEnd methods.
   - Chakra UI --- Styled components. Built in dark mode. Saved time otherwise spent on writing CSS.
   - TypeScript --- Strong typechecking, interfaces, and intellisense.
@@ -15,7 +15,7 @@
   - Browser Support --- Game runs stable across Brave, FireFox, and Chrome and across all major screen sizes. Game feels fantastic on touch screens and tablets.
 
 
-- Extra Features Implemented
+- Extra Features Implemented ---
   - King Mechanics --- Checker can move backwards once it hits last row. This is indicated by a crown symbol on the checker.
   - Persistent Game State --- Game restores its state if page is refreshed.
   - Reset Game --- Reset game to initial state.
@@ -23,6 +23,10 @@
   - Dark Mode --- Switch to toggle between dark and light mode.
 
 
-- Features not implemented
+- Features not implemented ---
   - No-brain AI Player
+
+
+- Deployed version ---
+  - [Netlify Link](https://condescending-mayer-b1a045.netlify.app/)
 

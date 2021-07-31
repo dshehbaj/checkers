@@ -26,3 +26,7 @@
 - Features not implemented ---
   - No-brain AI Player
 
+
+- Deployed version ---
+  - [Netlify Link](https://condescending-mayer-b1a045.netlify.app/)
+
