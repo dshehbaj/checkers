@@ -16,13 +16,13 @@ function getSquares(
   switch (Math.abs(value)) {
     case magicNums.BKING:
     case magicNums.RKING:
-      dir = "both";
+      dir = magicNums.KDIR;
       break;
     case magicNums.BLACK:
-      dir = "down";
+      dir = magicNums.BDIR;
       break;
     case magicNums.RED:
-      dir = "up";
+      dir = magicNums.RDIR;
       break;
   }
 
