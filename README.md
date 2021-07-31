@@ -30,3 +30,6 @@
 - Deployed version ---
   - [Netlify Link](https://condescending-mayer-b1a045.netlify.app/)
 
+
+- Known Bugs ---
+  - Refresh after undo --- On some instances, game state fails to load properly.
