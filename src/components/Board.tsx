@@ -32,20 +32,7 @@ const TOPSPACING = [43, 43, 86, 86];
 const TEXTSIZE = [7, 7, 14, 14];
 const TEXTCOLOR = "white";
 
-//Negative values = item is disabled
-//0 = item is empty/not visible
-const BLACK = magicNums.BLACK;
-const RED = magicNums.RED;
-const EMPTY = magicNums.EMPTY;
-
-const BSquare: React.FC<SquareProps> = ({
-  row,
-  col,
-  size,
-  dropDisabled,
-  token,
-  jumpMode,
-}) => {
+const BSquare: React.FC<SquareProps> = ({ row, col, size, dropDisabled, token, jumpMode }) => {
   const offset = row % 2 ? 0 : 1;
   const bg = (col + offset) % 2 ? LIGHT : DARK;
   const one_d = row * size + col;
@@ -53,19 +40,19 @@ const BSquare: React.FC<SquareProps> = ({
     <Center width={SQUARE_SIZE} height={SQUARE_SIZE} bg={bg}>
       <Square
         size={SQUARE_SIZE}
-        bg={dropDisabled ? "" : jumpMode ? "red" : "green"}
         shadow="dark-lg"
+        bg={dropDisabled ? "" : jumpMode ? "red" : "green"}
       >
         <Draggable
           index={one_d}
           draggableId={String(one_d)}
-          isDragDisabled={token < 0 || Math.abs(token) === EMPTY} //Square is disabled or Empty
+          isDragDisabled={token < 0 || Math.abs(token) === magicNums.EMPTY} //Square is disabled or Empty
         >
           {({ draggableProps, dragHandleProps, innerRef }) => (
             <Box {...draggableProps} {...dragHandleProps} ref={innerRef}>
               <Piece
                 color={Math.abs(token)}
-                visibile={Math.abs(token) !== EMPTY}
+                visibile={Math.abs(token) !== magicNums.EMPTY}
                 movable={token > 0} //Movable if positive
               />
             </Box>
@@ -79,14 +66,12 @@ const BSquare: React.FC<SquareProps> = ({
 const Row: React.FC<RowProps> = ({ row, size, tokens, jumpMode }) => {
   return (
     <HStack spacing={STACK_SPACING}>
-      {
-        <Text p={0.5} fontSize={TEXTSIZE} color={TEXTCOLOR}>
-          {size - row}
-        </Text>
-      }
+      <Text p={0.5} fontSize={TEXTSIZE} color={TEXTCOLOR}>
+        {size - row}
+      </Text>
       {new Array(size).fill(0).map((_, idx) => {
         const one_d = row * size + idx;
-        const isDropDisabled = tokens[idx] !== EMPTY;
+        const isDropDisabled = tokens[idx] !== magicNums.EMPTY;
         return (
           <Droppable
             droppableId={String(one_d)}
@@ -109,19 +94,17 @@ const Row: React.FC<RowProps> = ({ row, size, tokens, jumpMode }) => {
           </Droppable>
         );
       })}
-      {
-        <Text p={0.5} fontSize={TEXTSIZE} color={TEXTCOLOR}>
-          {size - row}
-        </Text>
-      }
+      <Text p={0.5} fontSize={TEXTSIZE} color={TEXTCOLOR}>
+        {size - row}
+      </Text>
     </HStack>
   );
 };
 
 const Board: React.FC<BoardProps> = ({ size }) => {
-  const r = RED;
-  const b = BLACK;
-  const e = EMPTY;
+  const r = magicNums.RED;
+  const b = magicNums.BLACK;
+  const e = magicNums.EMPTY;
   const initGrid = [
     -e, -b, -e, -b, -e, -b, -e, -b,
     -b, -e, -b, -e, -b, -e, -b, -e,
@@ -142,21 +125,15 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     setForceJump(false);
     setGrid(initGrid);
     setOldGrid(initGrid);
-  }
+  };
 
   useEffect(() => {
     const gridFromLocal = window.localStorage.getItem("gridLocal");
     const oldGridFromLocal = window.localStorage.getItem("oldGridLocal");
     const forceJumpFromLocal = window.localStorage.getItem("forceJumpLocal");
-    if (forceJumpFromLocal) {
-      setForceJump(eval(forceJumpFromLocal));
-    }
-    if (gridFromLocal) {
-      setGrid(JSON.parse(gridFromLocal));
-    }
-    if (oldGridFromLocal) {
-      setOldGrid(JSON.parse(oldGridFromLocal));
-    }
+    if (forceJumpFromLocal) setForceJump(eval(forceJumpFromLocal));
+    if (gridFromLocal) setGrid(JSON.parse(gridFromLocal));
+    if (oldGridFromLocal) setOldGrid(JSON.parse(oldGridFromLocal));
   }, [setGrid, setForceJump, setOldGrid]);
 
   useEffect(() => {
@@ -187,17 +164,15 @@ const Board: React.FC<BoardProps> = ({ size }) => {
         <ColorModeSwitcher />
       </HStack>
       <VStack spacing={STACK_SPACING} bg={OUTLINE} rounded="2xl">
-        {
-          <HStack spacing={TOPSPACING}>
-            {new Array(size).fill(0).map((_, idx) => {
-              return (
-                <Text fontSize={TEXTSIZE} color={TEXTCOLOR}>
-                  {String.fromCharCode("a".charCodeAt(0) + idx)}
-                </Text>
-              );
-            })}
-          </HStack>
-        }
+        <HStack spacing={TOPSPACING}>
+          {new Array(size).fill(0).map((_, idx) => {
+            return (
+              <Text fontSize={TEXTSIZE} color={TEXTCOLOR}>
+                {String.fromCharCode("a".charCodeAt(0) + idx)}
+              </Text>
+            );
+          })}
+        </HStack>
         <DragDropContext
           onDragEnd={handleOnDragEnd}
           onDragStart={handleOnDragStart}
@@ -214,17 +189,15 @@ const Board: React.FC<BoardProps> = ({ size }) => {
             );
           })}
         </DragDropContext>
-        {
-          <HStack spacing={TOPSPACING} color={TEXTCOLOR}>
-            {new Array(size).fill(0).map((_, idx) => {
-              return (
-                <Text fontSize={TEXTSIZE}>
-                  {String.fromCharCode("a".charCodeAt(0) + idx)}
-                </Text>
-              );
-            })}
-          </HStack>
-        }
+        <HStack spacing={TOPSPACING} color={TEXTCOLOR}>
+          {new Array(size).fill(0).map((_, idx) => {
+            return (
+              <Text fontSize={TEXTSIZE}>
+                {String.fromCharCode("a".charCodeAt(0) + idx)}
+              </Text>
+            );
+          })}
+        </HStack>
       </VStack>
     </VStack>
   );

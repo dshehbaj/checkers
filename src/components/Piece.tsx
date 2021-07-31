@@ -17,34 +17,16 @@ const BORDER = "2px";
 const Piece: React.FC<PieceInterface> = ({ color, visibile, movable }) => {
 
   const isKing = color === magicNums.BKING || color === magicNums.RKING;
-  let bg = "";
+  let bg = "red";
   switch (color) {
     case magicNums.BLACK:
     case magicNums.BKING:
       bg = "gray.700";
       break;
-
-    case magicNums.RED:
-    case magicNums.RKING:
-      bg = "red";
-      break;
-
-    default:
-      break;
   }
   return (
-    <Circle
-      size={MOVABLE}
-      bg={movable ? "orange" : ""}
-      visibility={visibile ? "visible" : "hidden"}
-    >
-      <Circle
-        size={OUTER}
-        bg={bg}
-        border={BORDER}
-        borderColor="black"
-        shadow="dark-lg"
-      >
+    <Circle size={MOVABLE} bg={movable ? "orange" : ""} visibility={visibile ? "visible" : "hidden"}>
+      <Circle size={OUTER} bg={bg} border={BORDER} borderColor="black" shadow="dark-lg">
         <Circle size={INNER} bg={bg} border={BORDER} borderColor="black">
           {isKing && (
             <Text color="black" fontSize={TEXTSIZE}>
