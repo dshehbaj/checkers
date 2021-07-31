@@ -151,9 +151,6 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     const forceJumpLocal = window.localStorage.getItem("forceJumpLocal");
     if (forceJumpLocal) setForceJump(forceJumpLocal === "true" ? true : false);
 
-    const canUndoLocal = window.localStorage.getItem("canUndoLocal");
-    if (canUndoLocal) setCanUndo(canUndoLocal === "true" ? true : false);
-
   }, [setGrid, setOldGrid, setUndoGrid, setForceJump, setCanUndo]);
 
   useEffect(() => {
@@ -161,7 +158,6 @@ const Board: React.FC<BoardProps> = ({ size }) => {
     window.localStorage.setItem("oldGridLocal", JSON.stringify(oldGrid));
     window.localStorage.setItem("undoGridLocal", JSON.stringify(undoGrid));
     window.localStorage.setItem("forceJumpLocal", String(forceJump));
-    window.localStorage.setItem("canUndoLocal", String(canUndo));
   }, [grid, oldGrid, undoGrid, forceJump, canUndo]);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
