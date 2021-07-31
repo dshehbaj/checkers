@@ -139,28 +139,40 @@ const Board: React.FC<BoardProps> = ({ size }) => {
   }
 
   useEffect(() => {
-    const gridFromLocal = window.localStorage.getItem("gridLocal");
-    const oldGridFromLocal = window.localStorage.getItem("oldGridLocal");
-    const forceJumpFromLocal = window.localStorage.getItem("forceJumpLocal");
-    if (forceJumpFromLocal) setForceJump(eval(forceJumpFromLocal));
-    if (gridFromLocal) setGrid(JSON.parse(gridFromLocal));
-    if (oldGridFromLocal) setOldGrid(JSON.parse(oldGridFromLocal));
-  }, [setGrid, setForceJump, setOldGrid]);
+    const gridLocal = window.localStorage.getItem("gridLocal");
+    if (gridLocal) setGrid(JSON.parse(gridLocal));
+
+    const oldGridLocal = window.localStorage.getItem("oldGridLocal");
+    if (oldGridLocal) setOldGrid(JSON.parse(oldGridLocal));
+
+    const undoGridLocal = window.localStorage.getItem("undoGridLocal");
+    if (undoGridLocal) setUndoGrid(JSON.parse(undoGridLocal));
+
+    const forceJumpLocal = window.localStorage.getItem("forceJumpLocal");
+    if (forceJumpLocal) setForceJump(forceJumpLocal === "true" ? true : false);
+
+    const canUndoLocal = window.localStorage.getItem("canUndoLocal");
+    if (canUndoLocal) setCanUndo(canUndoLocal === "true" ? true : false);
+
+  }, [setGrid, setOldGrid, setUndoGrid, setForceJump, setCanUndo]);
 
   useEffect(() => {
     window.localStorage.setItem("gridLocal", JSON.stringify(grid));
-    window.localStorage.setItem("forceJumpLocal", String(forceJump));
     window.localStorage.setItem("oldGridLocal", JSON.stringify(oldGrid));
-  }, [grid, forceJump, oldGrid]);
+    window.localStorage.setItem("undoGridLocal", JSON.stringify(undoGrid));
+    window.localStorage.setItem("forceJumpLocal", String(forceJump));
+    window.localStorage.setItem("canUndoLocal", String(canUndo));
+  }, [grid, oldGrid, undoGrid, forceJump, canUndo]);
 
   const handleOnDragEnd = (result: { [key: string]: any }) => {
     if (!result.destination) setGrid(oldGrid);
     else {
-      setCanUndo(true);
-      setUndoGrid(oldGrid);
       const nextGrid = getNewGrid(grid, size, result, forceJump);
       setGrid(nextGrid.grid);
       setForceJump(nextGrid.forceJump);
+
+      setCanUndo(true);
+      setUndoGrid(oldGrid);
     }
   };
 
@@ -192,7 +204,7 @@ const Board: React.FC<BoardProps> = ({ size }) => {
           onDragStart={handleOnDragStart}
         >
           {new Array(size).fill(0).map((_, idx) => {
-            let rowStart = idx * size;
+            const rowStart = idx * size;
             return (
               <Row
                 row={idx}
